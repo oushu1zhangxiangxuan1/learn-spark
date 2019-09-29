@@ -108,3 +108,8 @@ venv.bak/
 
 # scala project
 scala/project
+
+# Java related
+.classpath
+.project
+.settings
