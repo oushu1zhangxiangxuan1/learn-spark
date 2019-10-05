@@ -6,6 +6,7 @@ import org.apache.spark.util.LongAccumulator;
 import scala.Tuple2;
 
 import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.Row;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
@@ -18,6 +19,12 @@ import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.Function2;
 import org.apache.spark.broadcast.Broadcast;
 import org.apache.spark.SparkConf;
+import static org.apache.spark.sql.functions.col;
+
+import org.apache.spark.sql.Encoder;
+import org.apache.spark.sql.Encoders;
+
+import java.util.Collections;
 
 public class SimpleApp {
     // private
@@ -167,6 +174,63 @@ public class SimpleApp {
         sc.close();
     }
 
+    public void DatasetOp1() {
+        SparkSession spark = SparkSession.builder().appName("DatasetOp1").getOrCreate();
+        Dataset<Row> df = spark.read()
+                .json("/Users/johnsaxon/go/src/github.com/oushu-io/spark/examples/src/main/resources/people.json");
+
+        df.show();
+
+        df.printSchema();
+
+        df.select("name").show();
+
+        df.select(col("name"), col("age").plus(1)).show();
+
+        df.filter(col("age").gt(21)).show();
+
+        df.groupBy("age").count().show();
+
+        spark.stop();
+    }
+
+    public void SqlQuery1() {
+        SparkSession spark = SparkSession.builder().appName("DatasetOp1").getOrCreate();
+        Dataset<Row> df = spark.read()
+                .json("/Users/johnsaxon/go/src/github.com/oushu-io/spark/examples/src/main/resources/people.json");
+
+        df.createOrReplaceTempView("people");
+
+        Dataset<Row> sqlDF = spark.sql("SELECT * FROM people");
+        sqlDF.show();
+
+        // Global temporary view
+        // Register
+        try {
+            df.createGlobalTempView("people");
+        } catch (Exception e) {
+            // TODO: handle exception
+            System.out.println(e.toString());
+        }
+        spark.sql("SELECT * from global_temp.people").show();
+        spark.newSession().sql("SELECT * from global_temp.people").show();
+
+        spark.stop();
+    }
+
+    public void CreateDataset() {
+        Person person = new Person();
+        person.setName("Andy");
+        person.setAge(32);
+
+        SparkSession spark = SparkSession.builder().appName("DatasetOp1").getOrCreate();
+        // Dataset<Row> df = spark.read()
+        // .json("/Users/johnsaxon/go/src/github.com/oushu-io/spark/examples/src/main/resources/people.json");
+
+        Encoder<Integer> integerEncoder = Encoders.INT();
+        Dataset<Integer> primitiveDS = spark.CreateDataset(Collections.singletonList(person), personEncoder);
+    }
+
     public static void main(String[] args) {
 
         SimpleApp app = new SimpleApp();
@@ -178,7 +242,9 @@ public class SimpleApp {
         // app.Unwieldy();
         // app.KV();
         // app.Broadcast();
-        app.Accum();
+        // app.Accum();
+        // app.DatasetOp1();
+        app.SqlQuery1();
     }
-
+    // spark://localhost:7077
 }
