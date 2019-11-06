@@ -8,7 +8,7 @@ import org.apache.spark.sql.Row;
 import org.apache.spark.sql.Encoder;
 import org.apache.spark.sql.Encoders;
 
-public static class Person implements Serializable {
+public class Person implements Serializable {
     private String name;
     private int age;
 

@@ -41,21 +41,32 @@ public class SimpleApp {
     }
 
     public void SimpleAppTest() {
-        String logFile = "/usr/local/Cellar/spark/README.md";
-        SparkSession spark = SparkSession.builder().appName("Simple Application").getOrCreate();
-        Dataset<String> logData = spark.read().textFile(logFile).cache();
-
-        long numAs = logData.filter((String s) -> s.contains("a")).count();
-        long numBs = logData.filter((String s) -> s.contains("b")).count();
-
-        System.out.println("Lines with a:" + numAs + ", lines with b:" + numBs);
-
-        System.out.println("adfasfasssssssssssssssssfafafasfsafsafsssssssssssssssssssss");
-        System.out.println("adfasfasssssssssssssssssfafafasfsafsafsssssssssssssssssssss");
-        System.out.println("adfasfasssssssssssssssssfafafasfsafsafsssssssssssssssssssss");
-        System.out.println("adfasfasssssssssssssssssfafafasfsafsafsssssssssssssssssssss");
-
-        spark.stop();
+        try {
+            String logFile = "/usr/local/Cellar/spark/README.md";
+            SparkSession spark = SparkSession.builder().appName("What a fuck Application").getOrCreate();
+            Dataset<String> logData = spark.read().textFile(logFile).cache();
+    
+            long numAs = logData.filter((String s) -> s.contains("a")).count();
+            long numBs = logData.filter((String s) -> s.contains("b")).count();
+    
+            System.out.println("Lines with a:" + numAs + ", lines with b:" + numBs);
+            int i= 100;
+            while (i>0){
+                System.out.println("adfasfasssssssssssssssssfafafasfsafsafsssssssssssssssssssss");
+                // wait(10);
+                Thread.currentThread().sleep(10000);
+                i--;
+            }
+            System.out.println("adfasfasssssssssssssssssfafafasfsafsafsssssssssssssssssssss");
+            System.out.println("adfasfasssssssssssssssssfafafasfsafsafsssssssssssssssssssss");
+            System.out.println("adfasfasssssssssssssssssfafafasfsafsafsssssssssssssssssssss");
+    
+            spark.stop();
+            
+        } catch (Exception e) {
+            //TODO: handle exception
+            System.out.println(e);
+        }
     }
 
     public void ExtData() {
@@ -218,24 +229,24 @@ public class SimpleApp {
         spark.stop();
     }
 
-    public void CreateDataset() {
-        Person person = new Person();
-        person.setName("Andy");
-        person.setAge(32);
+    // public void CreateDataset() {
+    //     Person person = new Person();
+    //     person.setName("Andy");
+    //     person.setAge(32);
 
-        SparkSession spark = SparkSession.builder().appName("DatasetOp1").getOrCreate();
-        // Dataset<Row> df = spark.read()
-        // .json("/Users/johnsaxon/go/src/github.com/oushu-io/spark/examples/src/main/resources/people.json");
+    //     SparkSession spark = SparkSession.builder().appName("DatasetOp1").getOrCreate();
+    //     // Dataset<Row> df = spark.read()
+    //     // .json("/Users/johnsaxon/go/src/github.com/oushu-io/spark/examples/src/main/resources/people.json");
 
-        Encoder<Integer> integerEncoder = Encoders.INT();
-        Dataset<Integer> primitiveDS = spark.CreateDataset(Collections.singletonList(person), personEncoder);
-    }
+    //     Encoder<Integer> integerEncoder = Encoders.INT();
+    //     Dataset<Integer> primitiveDS = spark.CreateDataset(Collections.singletonList(person), personEncoder);
+    // }
 
     public static void main(String[] args) {
 
         SimpleApp app = new SimpleApp();
 
-        // app.SimpleAppTest();
+        app.SimpleAppTest();
         // app.RDD();
         // app.ExtData();
         // app.Lambda();
@@ -244,7 +255,7 @@ public class SimpleApp {
         // app.Broadcast();
         // app.Accum();
         // app.DatasetOp1();
-        app.SqlQuery1();
+        // app.SqlQuery1();
     }
     // spark://localhost:7077
 }
